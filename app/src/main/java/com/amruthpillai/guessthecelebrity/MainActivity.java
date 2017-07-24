@@ -28,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> celebrityNames = new ArrayList<>();
 
     int chosenCeleb = 0;
-    int locationOfCorrectAnswer = 0;
-    int[] answers = new int[4];
+    int correctAnswerLocation = 0;
+    String[] answers = new String[4];
 
     private class ImageDownloader extends AsyncTask<String, Void, Bitmap> {
 
@@ -112,12 +112,17 @@ public class MainActivity extends AppCompatActivity {
                 celebrityURLs.add(matcher.group(1));
             }
 
+            Log.i("Amruth", "onCreate: "+ celebrityURLs.size());
+
             pattern = Pattern.compile("alt=\"(.*?)\"");
             matcher = pattern.matcher(splitResult[0]);
 
             while (matcher.find()) {
                 celebrityNames.add(matcher.group(1));
             }
+
+            Log.i("Amruth", "onCreate: "+ celebrityNames.size());
+
 
             Random random = new Random();
             chosenCeleb = random.nextInt(celebrityURLs.size());
@@ -127,7 +132,27 @@ public class MainActivity extends AppCompatActivity {
 
             imageView.setImageBitmap(celebrityBitmap);
 
+            correctAnswerLocation = random.nextInt(3);
 
+            int incorrectAnswerLocation;
+
+            for (int i = 0; i < 4; i ++) {
+                if (i == correctAnswerLocation) {
+                    answers[i] = celebrityNames.get(chosenCeleb);
+                } else {
+                    incorrectAnswerLocation = random.nextInt(celebrityURLs.size());
+
+                    while (incorrectAnswerLocation == correctAnswerLocation)
+                        incorrectAnswerLocation = random.nextInt(celebrityURLs.size());
+
+                    answers[i] = celebrityNames.get(incorrectAnswerLocation);
+                }
+            }
+
+            button0.setText(answers[0]);
+            button1.setText(answers[1]);
+            button2.setText(answers[2]);
+            button3.setText(answers[3]);
 
         } catch (InterruptedException e) {
             e.printStackTrace();
